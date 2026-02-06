@@ -11,27 +11,30 @@ ml-toolkit: Personal Machine Learning Toolkit
 
 版本：0.1.0
 作者：landfallbox
+
+使用示例：
+    from ml_toolkit import models, training, evaluation, data_processing, utils
+
+    # 或者直接导入具体的类
+    from ml_toolkit.models import LSTM
+    from ml_toolkit.training import LSTMTrainer
+    from ml_toolkit.evaluation import Evaluator
+    from ml_toolkit.data_processing import Normalizer, DatasetLoader
+    from ml_toolkit.utils import Logger, CheckpointManager
 """
 
 __version__ = "0.1.0"
 __author__ = "landfallbox"
-__all__ = []
 
-# 延迟导入，避免循环依赖
-def __getattr__(name):
-    if name == "models":
-        from . import models
-        return models
-    elif name == "training":
-        from . import training
-        return training
-    elif name == "evaluation":
-        from . import evaluation
-        return evaluation
-    elif name == "data_processing":
-        from . import data_processing
-        return data_processing
-    elif name == "utils":
-        from . import utils
-        return utils
-    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+# 导入子模块以便使用 ml_toolkit.models 等方式访问
+from . import data_processing, evaluation, models, training, utils
+
+__all__ = [
+    "__version__",
+    "__author__",
+    "models",
+    "training",
+    "evaluation",
+    "data_processing",
+    "utils",
+]

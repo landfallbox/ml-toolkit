@@ -4,5 +4,6 @@
 """
 
 from .base_trainer import BaseTrainer
+from .lstm_trainer import LSTMTrainer
 
-__all__ = ["BaseTrainer"]
+__all__ = ["BaseTrainer", "LSTMTrainer"]
