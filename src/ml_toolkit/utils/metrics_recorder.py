@@ -37,13 +37,11 @@ class MetricsRecorder:
         self.experiment_dir = Path(experiment_dir)
         self.experiment_dir.mkdir(parents=True, exist_ok=True)
 
-        # 设置文件名
-        if metrics_filename is None or history_filename is None:
-            from config.common_config import CommonConfig
-            if metrics_filename is None:
-                metrics_filename = CommonConfig.METRICS_FILENAME
-            if history_filename is None:
-                history_filename = CommonConfig.TRAINING_HISTORY_FILENAME
+        # 设置文件名，使用默认值
+        if metrics_filename is None:
+            metrics_filename = "metrics.json"
+        if history_filename is None:
+            history_filename = "training_history.csv"
 
         self.metrics_filename = metrics_filename
         self.history_filename = history_filename

@@ -5,8 +5,8 @@
 """
 from torch.utils.data import DataLoader
 
-from src.core.evaluation.metrics import calculate_accuracy
-from src.core.training.base_trainer import BaseTrainer
+from ..evaluation.metrics import calculate_accuracy
+from .base_trainer import BaseTrainer
 
 
 class LSTMTrainer(BaseTrainer):
