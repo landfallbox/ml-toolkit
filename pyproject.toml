@@ -1,0 +1,12 @@
+[project]
+name = "ml-toolkit"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas>=3.0.0",
+    "pyyaml>=6.0.3",
+    "torch>=2.10.0",
+]
+
