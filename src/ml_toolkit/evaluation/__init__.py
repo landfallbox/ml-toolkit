@@ -4,7 +4,7 @@
 """
 
 from .base_evaluator import BaseEvaluator
-from .lstm_evaluator import Evaluator
+from .lstm_evaluator import LSTMEvaluator
 from .metrics import (
     calculate_accuracy,
     calculate_f1,
@@ -19,7 +19,7 @@ from .metrics import (
 
 __all__ = [
     "BaseEvaluator",
-    "Evaluator",
+    "LSTMEvaluator",
     "calculate_accuracy",
     "calculate_f1",
     "calculate_loss",

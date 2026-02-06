@@ -12,7 +12,7 @@ from .base_evaluator import BaseEvaluator
 from .metrics import calculate_accuracy, calculate_f1
 
 
-class Evaluator(BaseEvaluator):
+class LSTMEvaluator(BaseEvaluator):
     """
     LSTM 模型评估器
 
