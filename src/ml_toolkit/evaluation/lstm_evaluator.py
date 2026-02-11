@@ -8,7 +8,7 @@ from typing import Dict, Any, Callable
 import torch
 from torch.utils.data import DataLoader
 
-from .base_evaluator import BaseEvaluator
+from .evaluator import BaseEvaluator
 from .metrics import calculate_accuracy, calculate_f1
 
 

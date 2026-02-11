@@ -6,7 +6,7 @@
 from torch.utils.data import DataLoader
 
 from ..evaluation.metrics import calculate_accuracy
-from .base_trainer import BaseTrainer
+from .trainer import BaseTrainer
 
 
 class LSTMTrainer(BaseTrainer):
