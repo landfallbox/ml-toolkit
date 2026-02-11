@@ -7,7 +7,7 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.frozen import FrozenEstimator
 
-from .calibrated_classifier_base import CalibratedClassifier
+from .calibrated_classifier import CalibratedClassifier
 
 
 class ExtraTreesCalibratedClassifier(CalibratedClassifier):
