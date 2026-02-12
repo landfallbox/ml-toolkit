@@ -8,11 +8,11 @@ from typing import Dict, Any, Callable
 import torch
 from torch.utils.data import DataLoader
 
-from .evaluator import BaseEvaluator
+from .evaluator import Evaluator
 from .metrics import calculate_accuracy, calculate_f1
 
 
-class LSTMEvaluator(BaseEvaluator):
+class LSTMEvaluator(Evaluator):
     """
     LSTM 模型评估器
 

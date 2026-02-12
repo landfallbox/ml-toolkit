@@ -6,10 +6,10 @@
 from torch.utils.data import DataLoader
 
 from ..evaluation.metrics import calculate_accuracy
-from .trainer import BaseTrainer
+from .trainer import Trainer
 
 
-class LSTMTrainer(BaseTrainer):
+class LSTMTrainer(Trainer):
     """
     LSTM 模型训练器
     """

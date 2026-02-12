@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from typing import Dict, Any
 
 
-class BaseEvaluator(ABC):
+class Evaluator(ABC):
     """
     评估器抽象基类
 

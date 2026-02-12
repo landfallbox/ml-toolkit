@@ -3,7 +3,7 @@
 包含通用的评估器基类和评估流程
 """
 
-from .evaluator import BaseEvaluator
+from .evaluator import Evaluator
 from .lstm_evaluator import LSTMEvaluator
 from .metrics import (
     calculate_accuracy,
@@ -18,7 +18,7 @@ from .metrics import (
 )
 
 __all__ = [
-    "BaseEvaluator",
+    "Evaluator",
     "LSTMEvaluator",
     "calculate_accuracy",
     "calculate_f1",

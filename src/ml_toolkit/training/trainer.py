@@ -8,7 +8,7 @@ import torch
 from torch.utils.data import DataLoader
 
 
-class BaseTrainer(ABC):
+class Trainer(ABC):
     """
     训练器抽象基类
 
