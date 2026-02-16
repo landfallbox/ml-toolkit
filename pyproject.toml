@@ -8,6 +8,21 @@ version = "0.1.0"
 description = "Personal Machine Learning Toolkit"
 readme = "README.md"
 requires-python = ">=3.13"
+authors = [
+    { name = "landfallbox", email = "landfallbox@gmail.com" }
+]
+license = { text = "MIT" }
+keywords = ["machine-learning", "deep-learning", "pytorch", "neural-networks"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = [
     "pandas>=3.0.0",
     "pyyaml>=6.0.3",
@@ -18,5 +33,72 @@ dependencies = [
     "scikit-learn>=1.3.0",
 ]
 
+[project.urls]
+Repository = "https://github.com/yourusername/ml-toolkit"
+"Bug Tracker" = "https://github.com/yourusername/ml-toolkit/issues"
+Documentation = "https://github.com/yourusername/ml-toolkit"
+
+[project.optional-dependencies]
+dev = [
+    "black>=24.0.0",
+    "pylint>=3.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=2.0.0",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/ml_toolkit"]
+
+# Black 代码格式化配置
+[tool.black]
+line-length = 100
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # 目录
+  \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+# Pylint 代码检查配置
+[tool.pylint.messages_control]
+disable = [
+    "C0103",  # invalid-name
+    "C0114",  # missing-module-docstring
+    "C0115",  # missing-class-docstring
+    "C0116",  # missing-function-docstring
+    "R0903",  # too-few-public-methods
+    "W0212",  # protected-access
+]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "x", "y", "z", "ex", "f", "_"]
+
+# Pytest 测试配置
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-v --strict-markers --cov=src/ml_toolkit --cov-report=html"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests",
+]
+

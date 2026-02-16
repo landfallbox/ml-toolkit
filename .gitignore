@@ -1,1 +1,79 @@
-/.idea
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv
+venv/
+ENV/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# UV
+.uv-cache/
+
+# Optuna
+optuna_studies/
+*.db
+
+# PyTorch
+*.pth
+*.pt
+checkpoint*/
+model_weights/
+
+# Data
+data/
+datasets/
+*.csv
+*.parquet
+*.feather
+
+# Logs
+logs/
+*.log
+
+# MacOS
+.DS_Store
