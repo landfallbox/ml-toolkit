@@ -4,7 +4,7 @@
 @Description : LSTM 模型评估器
 """
 
-from typing import Dict, Any, Callable
+from typing import Any, Callable, Dict
 
 import torch
 from torch.utils.data import DataLoader

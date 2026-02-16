@@ -5,9 +5,10 @@
 """
 
 from abc import ABC, abstractmethod
+from typing import Any, Dict
+
 import torch
 from torch.utils.data import DataLoader
-from typing import Dict, Any
 
 
 class Evaluator(ABC):
@@ -48,7 +49,7 @@ class Evaluator(ABC):
         注意：
             子类实现时应使用 torch.no_grad() 上下文管理器
         """
-        pass
+        raise NotImplementedError("Subclasses must implement this method")
 
     @torch.no_grad()
     def validate(self, val_loader: DataLoader) -> Dict[str, Any]:

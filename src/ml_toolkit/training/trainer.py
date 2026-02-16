@@ -5,7 +5,7 @@
 """
 
 from abc import ABC, abstractmethod
-import torch
+
 from torch.utils.data import DataLoader
 
 
@@ -42,7 +42,7 @@ class Trainer(ABC):
         返回：
             包含训练指标的字典
         """
-        pass
+        raise NotImplementedError("Subclasses must implement this method")
 
     def train(
         self,

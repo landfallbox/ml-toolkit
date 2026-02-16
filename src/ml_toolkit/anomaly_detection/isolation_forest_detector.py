@@ -6,6 +6,7 @@ IsolationForest 异常检测器实现。
 """
 
 from typing import Optional
+
 import numpy as np
 from sklearn.ensemble import IsolationForest
 

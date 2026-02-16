@@ -3,6 +3,7 @@ ExtraTrees + Platt Scaling calibrated classifier.
 """
 
 from typing import Optional
+
 import numpy as np
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import ExtraTreesClassifier

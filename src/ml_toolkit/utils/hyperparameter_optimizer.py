@@ -6,10 +6,11 @@
 
 import json
 from pathlib import Path
-from typing import Dict, Any, Callable, Optional
+from typing import Any, Callable, Dict, Optional
+
 import optuna
-from optuna.samplers import TPESampler, RandomSampler
 from optuna.pruners import MedianPruner
+from optuna.samplers import RandomSampler, TPESampler
 
 
 class HyperparameterSpace:

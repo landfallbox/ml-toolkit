@@ -5,7 +5,8 @@
 重采样平衡增强实现。
 """
 
-from typing import Tuple, Optional
+from typing import Optional, Tuple
+
 import numpy as np
 
 from .data_augmentation import DataAugmentationStrategy

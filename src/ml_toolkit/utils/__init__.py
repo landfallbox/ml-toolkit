@@ -28,7 +28,7 @@ except ImportError:
     pass
 
 try:
-    from .hyperparameter_optimizer import HyperparameterSpace, BayesianOptimizer
+    from .hyperparameter_optimizer import BayesianOptimizer, HyperparameterSpace
 
     __all__.extend(["HyperparameterSpace", "BayesianOptimizer"])
 except ImportError:
