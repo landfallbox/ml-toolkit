@@ -12,9 +12,9 @@ import numpy as np
 from .data_augmentation import DataAugmentationStrategy
 
 
-class SequenceResamplingAugmentation(DataAugmentationStrategy):
+class SequenceResamplingAugmentor(DataAugmentationStrategy):
     """
-    序列数据重采样平衡
+    序列重采样增强
 
     通过随机欠采样多数类达到目标类别比例，解决类别不平衡问题。
     """

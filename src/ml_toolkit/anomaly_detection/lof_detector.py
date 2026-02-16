@@ -11,7 +11,7 @@ from sklearn.neighbors import LocalOutlierFactor
 from .anomaly_detector import AnomalyDetector
 
 
-class LocalOutlierFactorDetector(AnomalyDetector):
+class LOFDetector(AnomalyDetector):
     """LocalOutlierFactor异常检测器"""
 
     def __init__(
@@ -29,7 +29,7 @@ class LocalOutlierFactorDetector(AnomalyDetector):
         self.model: LocalOutlierFactor | None = None
         self.is_fitted = False
 
-    def fit(self, x: np.ndarray) -> "LocalOutlierFactorDetector":
+    def fit(self, x: np.ndarray) -> "LOFDetector":
         self.model = LocalOutlierFactor(
             n_neighbors=self.n_neighbors,
             contamination=self.contamination,

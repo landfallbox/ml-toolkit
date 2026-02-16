@@ -12,7 +12,7 @@ from sklearn.frozen import FrozenEstimator
 from .calibrated_classifier import CalibratedClassifier
 
 
-class ExtraTreesCalibratedClassifier(CalibratedClassifier):
+class ExtraTreesCalibrator(CalibratedClassifier):
     """ExtraTrees + Platt Scaling校准分类器"""
 
     def __init__(
@@ -49,7 +49,7 @@ class ExtraTreesCalibratedClassifier(CalibratedClassifier):
         y_train: np.ndarray,
         x_cal: Optional[np.ndarray] = None,
         y_cal: Optional[np.ndarray] = None,
-    ) -> "ExtraTreesCalibratedClassifier":
+    ) -> "ExtraTreesCalibrator":
         self.base_clf = ExtraTreesClassifier(
             n_estimators=self.n_estimators,
             max_depth=self.max_depth,

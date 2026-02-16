@@ -12,7 +12,7 @@ from sklearn.frozen import FrozenEstimator
 from .calibrated_classifier import CalibratedClassifier
 
 
-class RandomForestCalibratedClassifier(CalibratedClassifier):
+class RandomForestCalibrator(CalibratedClassifier):
     """RandomForest + Platt Scaling校准分类器"""
 
     def __init__(
@@ -49,7 +49,7 @@ class RandomForestCalibratedClassifier(CalibratedClassifier):
         y_train: np.ndarray,
         x_cal: Optional[np.ndarray] = None,
         y_cal: Optional[np.ndarray] = None,
-    ) -> "RandomForestCalibratedClassifier":
+    ) -> "RandomForestCalibrator":
         self.base_clf = RandomForestClassifier(
             n_estimators=self.n_estimators,
             max_depth=self.max_depth,

@@ -27,3 +27,7 @@ class AnomalyDetector(ABC):
     def predict(self, x: np.ndarray) -> np.ndarray:
         """预测异常标签"""
         raise NotImplementedError
+
+    def fit_predict(self, x: np.ndarray) -> np.ndarray:
+        """训练并预测异常标签"""
+        return self.fit(x).predict(x)

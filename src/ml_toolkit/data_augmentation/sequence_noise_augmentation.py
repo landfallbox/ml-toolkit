@@ -12,7 +12,7 @@ import numpy as np
 from .data_augmentation import DataAugmentationStrategy
 
 
-class SequenceNoiseAugmentation(DataAugmentationStrategy):
+class SequenceNoiseAugmentor(DataAugmentationStrategy):
     """
     序列数据高斯噪声增强
 

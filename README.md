@@ -92,7 +92,7 @@ from ml_toolkit.evaluation import Evaluator
 from ml_toolkit.data_processing import Normalizer, DatasetLoader
 
 # 异常检测
-from ml_toolkit.anomaly_detection import IsolationForestAnomalyDetector, LocalOutlierFactorDetector
+from ml_toolkit.anomaly_detection import IsolationForestDetector, LOFDetector
 
 # 其他模块同理，详见 `src/ml_toolkit/` 各子包的 `__init__.py`
 ```
@@ -104,6 +104,3 @@ MIT License
 ---
 
 欢迎提交 Issue 和 Pull Request！
-
-
-

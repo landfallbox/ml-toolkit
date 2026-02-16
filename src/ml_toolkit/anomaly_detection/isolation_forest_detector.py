@@ -13,7 +13,7 @@ from sklearn.ensemble import IsolationForest
 from .anomaly_detector import AnomalyDetector
 
 
-class IsolationForestAnomalyDetector(AnomalyDetector):
+class IsolationForestDetector(AnomalyDetector):
     """IsolationForest异常检测器"""
 
     def __init__(
@@ -31,7 +31,7 @@ class IsolationForestAnomalyDetector(AnomalyDetector):
         self.model: IsolationForest | None = None
         self.is_fitted = False
 
-    def fit(self, x: np.ndarray) -> "IsolationForestAnomalyDetector":
+    def fit(self, x: np.ndarray) -> "IsolationForestDetector":
         self.model = IsolationForest(
             contamination=self.contamination,
             n_estimators=self.n_estimators,
@@ -51,3 +51,9 @@ class IsolationForestAnomalyDetector(AnomalyDetector):
         if not self.is_fitted:
             raise RuntimeError("Model not fitted. Call fit() first.")
         return self.model.predict(x)
+
+    def decision_function(self, x: np.ndarray) -> np.ndarray:
+        if not self.is_fitted:
+            raise RuntimeError("Model not fitted. Call fit() first.")
+        return -self.model.decision_function(x)
+
