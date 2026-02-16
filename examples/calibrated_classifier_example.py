@@ -6,7 +6,7 @@
 
 import numpy as np
 from sklearn.datasets import make_classification
-from ml_toolkit.calibrated_classifier import RandomForestCalibrator
+from ml_toolkit.calibration import RandomForestCalibrator
 
 # 生成示例数据
 X, y = make_classification(

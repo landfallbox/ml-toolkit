@@ -1,5 +1,5 @@
 """
-ExtraTrees + Platt Scaling calibrated classifier.
+ExtraTrees + Platt Scaling calibrator.
 """
 
 from typing import Optional
@@ -9,11 +9,11 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.frozen import FrozenEstimator
 
-from .calibrated_classifier import CalibratedClassifier
+from .calibrator import Calibrator
 
 
-class ExtraTreesCalibrator(CalibratedClassifier):
-    """ExtraTrees + Platt Scaling校准分类器"""
+class ExtraTreesCalibrator(Calibrator):
+    """ExtraTrees + Platt Scaling校准器"""
 
     def __init__(
         self,
@@ -88,3 +88,11 @@ class ExtraTreesCalibrator(CalibratedClassifier):
     def predict_proba_positive(self, x: np.ndarray) -> np.ndarray:
         proba = self.predict_proba(x)
         return proba[:, 1]
+
+    @property
+    def feature_importances_(self) -> np.ndarray:
+        """获取特征重要性"""
+        if not self.is_fitted or self.base_clf is None:
+            raise RuntimeError("Model not fitted. Call fit() first.")
+        return self.base_clf.feature_importances_
+

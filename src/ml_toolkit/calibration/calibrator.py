@@ -8,8 +8,8 @@ from typing import Optional
 import numpy as np
 
 
-class CalibratedClassifier(ABC):
-    """校准分类器基类"""
+class Calibrator(ABC):
+    """校准器基类"""
 
     @abstractmethod
     def fit(
@@ -18,7 +18,7 @@ class CalibratedClassifier(ABC):
         y_train: np.ndarray,
         x_cal: Optional[np.ndarray] = None,
         y_cal: Optional[np.ndarray] = None,
-    ) -> "CalibratedClassifier":
+    ) -> "Calibrator":
         """训练并校准分类器"""
         raise NotImplementedError
 

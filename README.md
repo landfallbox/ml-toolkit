@@ -35,7 +35,7 @@ ml-toolkit/
 │   ├── evaluation/          # 评估框架
 │   ├── data_processing/     # 数据处理工具
 │   ├── anomaly_detection/   # 异常检测
-│   ├── calibrated_classifier/  # 校准分类器
+│   ├── calibration/         # 校准器
 │   ├── data_augmentation/   # 数据增强
 │   ├── rl/                  # 强化学习
 │   └── utils/               # 通用工具
@@ -93,6 +93,9 @@ from ml_toolkit.data_processing import Normalizer, DatasetLoader
 
 # 异常检测
 from ml_toolkit.anomaly_detection import IsolationForestDetector, LOFDetector
+
+# 校准
+from ml_toolkit.calibration import RandomForestCalibrator, ExtraTreesCalibrator
 
 # 其他模块同理，详见 `src/ml_toolkit/` 各子包的 `__init__.py`
 ```
