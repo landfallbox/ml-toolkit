@@ -45,6 +45,3 @@ feature_importance = calibrator.feature_importances_
 print(f"特征重要性: {feature_importance}")
 print(f"最重要的特征索引: {np.argsort(feature_importance)[-3:][::-1]}")
 
-
-
-

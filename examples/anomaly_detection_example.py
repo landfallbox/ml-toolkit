@@ -44,4 +44,3 @@ iso_scores = iso_detector.decision_function(data)
 print(f"隔离森林异常分数 (前10个): {iso_scores[:10]}")
 print(f"分数范围: [{iso_scores.min():.4f}, {iso_scores.max():.4f}]")
 
-

@@ -42,6 +42,3 @@ print(f"False Positives: {cm[0, 1]}")
 print(f"False Negatives: {cm[1, 0]}")
 print(f"True Positives: {cm[1, 1]}")
 
-
-
-

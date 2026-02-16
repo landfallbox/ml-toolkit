@@ -60,6 +60,3 @@ with tempfile.TemporaryDirectory() as tmpdir:
 
 print("示例完成")
 
-
-
-
