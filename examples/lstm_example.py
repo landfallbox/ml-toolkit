@@ -9,13 +9,7 @@ import torch.nn as nn
 from ml_toolkit.models import LSTM
 
 # 创建 LSTM 模型
-model = LSTM(
-    input_size=10,
-    hidden_sizes=[64, 32],
-    output_size=2,
-    batch_first=True,
-    dropout=0.2
-)
+model = LSTM(input_size=10, hidden_sizes=[64, 32], output_size=2, batch_first=True, dropout=0.2)
 
 print(f"Model: {model}")
 
@@ -30,4 +24,3 @@ print(f"Output shape: {output.shape}")  # 应为 (32, 2)
 # 模型参数数量
 total_params = sum(p.numel() for p in model.parameters())
 print(f"Total parameters: {total_params}")
-

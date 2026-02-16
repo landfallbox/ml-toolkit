@@ -3,6 +3,7 @@
 @Date        : 2026/02/03 星期一
 @Description : LSTM 模型训练器
 """
+
 from torch.utils.data import DataLoader
 
 from ..evaluation.metrics import calculate_accuracy
@@ -14,13 +15,7 @@ class LSTMTrainer(Trainer):
     LSTM 模型训练器
     """
 
-    def __init__(
-        self,
-        model,
-        optimizer,
-        loss_fn,
-        device: str
-    ):
+    def __init__(self, model, optimizer, loss_fn, device: str):
         """
         初始化 LSTM 训练器
 
@@ -71,8 +66,4 @@ class LSTMTrainer(Trainer):
         avg_loss = total_loss / batch_count if batch_count > 0 else 0.0
         avg_accuracy = total_accuracy / batch_count if batch_count > 0 else 0.0
 
-        return {
-            "loss": avg_loss,
-            "accuracy": avg_accuracy
-        }
-
+        return {"loss": avg_loss, "accuracy": avg_accuracy}

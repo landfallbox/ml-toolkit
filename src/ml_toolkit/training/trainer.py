@@ -3,6 +3,7 @@
 @Date        : 2026/02/03 星期一
 @Description : 训练器抽象基类（通用可复用实现）
 """
+
 from abc import ABC, abstractmethod
 import torch
 from torch.utils.data import DataLoader
@@ -44,15 +45,15 @@ class Trainer(ABC):
         pass
 
     def train(
-            self,
-            train_loader: DataLoader,
-            val_loader: DataLoader,
-            evaluator,
-            epochs: int,
-            logger=None,
-            checkpoint_manager=None,
-            config: dict = None,
-            early_stop_patience: int = None
+        self,
+        train_loader: DataLoader,
+        val_loader: DataLoader,
+        evaluator,
+        epochs: int,
+        logger=None,
+        checkpoint_manager=None,
+        config: dict = None,
+        early_stop_patience: int = None,
     ) -> dict:
         """
         完整的训练流程
@@ -81,8 +82,8 @@ class Trainer(ABC):
             "train_metrics": [],
             "val_metrics": [],
             "best_epoch": 0,
-            "best_val_loss": float('inf'),
-            "stopped_epoch": None
+            "best_val_loss": float("inf"),
+            "stopped_epoch": None,
         }
 
         patience_counter = 0
@@ -111,9 +112,11 @@ class Trainer(ABC):
 
             # 定期记录epoch信息
             if logger is not None and (epoch + 1) % max(1, epochs // 10) == 0:
-                message = (f"Epoch {epoch + 1}/{epochs} - "
-                           f"train_loss: {train_metrics.get('loss', 0):.4f}, "
-                           f"val_loss: {val_loss:.4f}")
+                message = (
+                    f"Epoch {epoch + 1}/{epochs} - "
+                    f"train_loss: {train_metrics.get('loss', 0):.4f}, "
+                    f"val_loss: {val_loss:.4f}"
+                )
                 logger.info(message)
 
             # 检查早停条件
@@ -147,7 +150,7 @@ class Trainer(ABC):
             epoch=epoch,
             metrics=metrics,
             config=config,
-            is_best=True
+            is_best=True,
         )
         if logger is not None:
             logger.info(f"保存最优模型 (Epoch {epoch + 1}, val_loss: {val_loss:.4f})")

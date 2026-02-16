@@ -44,10 +44,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
 
     # 保存检查点
     checkpoint_path = checkpoint_manager.save_checkpoint(
-        model=model,
-        optimizer=optimizer,
-        epoch=10,
-        metrics={"loss": 0.123, "accuracy": 0.95}
+        model=model, optimizer=optimizer, epoch=10, metrics={"loss": 0.123, "accuracy": 0.95}
     )
 
     print(f"检查点已保存到: {checkpoint_path}")
@@ -59,4 +56,3 @@ with tempfile.TemporaryDirectory() as tmpdir:
     print(f"  - Metrics: {checkpoint.get('metrics', 'N/A')}")
 
 print("示例完成")
-

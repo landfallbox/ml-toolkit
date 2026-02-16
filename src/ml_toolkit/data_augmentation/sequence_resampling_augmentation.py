@@ -4,6 +4,7 @@
 
 重采样平衡增强实现。
 """
+
 from typing import Tuple, Optional
 import numpy as np
 
@@ -18,10 +19,7 @@ class SequenceResamplingAugmentation(DataAugmentationStrategy):
     """
 
     def __init__(
-        self,
-        target_ratio: float = 0.5,
-        minority_class: int = 1,
-        random_state: Optional[int] = None
+        self, target_ratio: float = 0.5, minority_class: int = 1, random_state: Optional[int] = None
     ):
         """
         Args:
@@ -37,10 +35,7 @@ class SequenceResamplingAugmentation(DataAugmentationStrategy):
             np.random.seed(random_state)
 
     def augment(
-        self,
-        sequences: np.ndarray,
-        labels: np.ndarray,
-        time_indices: np.ndarray
+        self, sequences: np.ndarray, labels: np.ndarray, time_indices: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         通过重采样达到目标类别比例
@@ -70,16 +65,11 @@ class SequenceResamplingAugmentation(DataAugmentationStrategy):
         num_majority_target = min(num_majority_target, num_majority)
 
         # 随机选择多数类样本
-        selected_majority = np.random.choice(
-            majority_indices,
-            num_majority_target,
-            replace=False
-        )
+        selected_majority = np.random.choice(majority_indices, num_majority_target, replace=False)
         selected_indices = np.concatenate([minority_indices, selected_majority])
 
         return (
             sequences[selected_indices],
             labels[selected_indices],
-            time_indices[selected_indices]
+            time_indices[selected_indices],
         )
-

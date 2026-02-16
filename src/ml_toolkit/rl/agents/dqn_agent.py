@@ -1,6 +1,7 @@
 """
 DQN 智能体实现。
 """
+
 from typing import Tuple, Optional
 import numpy as np
 import torch
@@ -124,13 +125,13 @@ class DQNAgent(Agent):
         """创建策略网络和目标网络"""
         # 构建网络初始化参数
         net_kwargs = {
-            'state_size': self.state_size,
-            'action_size': self.action_size,
+            "state_size": self.state_size,
+            "action_size": self.action_size,
         }
 
         # 如果用户没有提供自定义参数，使用默认的 hidden_size
-        if 'hidden_size' not in self.policy_net_kwargs:
-            net_kwargs['hidden_size'] = self.hidden_size
+        if "hidden_size" not in self.policy_net_kwargs:
+            net_kwargs["hidden_size"] = self.hidden_size
 
         # 合并用户提供的额外参数
         net_kwargs.update(self.policy_net_kwargs)
@@ -171,19 +172,17 @@ class DQNAgent(Agent):
 
         if np.random.random() > self.epsilon:  # 利用
             with torch.no_grad():
-                state_t = torch.as_tensor(state, dtype=torch.float32, device=self.device).unsqueeze(0)
+                state_t = torch.as_tensor(state, dtype=torch.float32, device=self.device).unsqueeze(
+                    0
+                )
                 q_values = self.policy_net(state_t)
-                action_idx = torch.argmax(q_values[0][:self.action_size]).item()
+                action_idx = torch.argmax(q_values[0][: self.action_size]).item()
                 return int(action_idx)
         else:  # 探索
             return int(np.random.randint(0, self.action_size))
 
     def store_transition(
-        self,
-        state: np.ndarray,
-        action: int,
-        reward: float,
-        next_state: np.ndarray
+        self, state: np.ndarray, action: int, reward: float, next_state: np.ndarray
     ) -> None:
         """
         存储转移到重放缓冲区
@@ -194,12 +193,7 @@ class DQNAgent(Agent):
             reward: 获得的奖励
             next_state: 下一个状态
         """
-        self.replay_buffer.push(
-            state=state,
-            action=action,
-            reward=reward,
-            next_state=next_state
-        )
+        self.replay_buffer.push(state=state, action=action, reward=reward, next_state=next_state)
 
     def learn(self) -> float:
         """
@@ -214,10 +208,10 @@ class DQNAgent(Agent):
 
         # 从重放缓冲区采样小批量
         batch = self.replay_buffer.sample(self.batch_size)
-        b_s = batch['state']
-        b_a = batch['action']
-        b_r = batch['reward']
-        b_s_next = batch['next_state']
+        b_s = batch["state"]
+        b_a = batch["action"]
+        b_r = batch["reward"]
+        b_s_next = batch["next_state"]
 
         # 转换为张量
         b_s = torch.as_tensor(b_s, dtype=torch.float32, device=self.device)
@@ -249,25 +243,29 @@ class DQNAgent(Agent):
             **kwargs: 其他元数据
         """
         checkpoint = {
-            'model_state_dict': self.policy_net.state_dict(),
-            'target_state_dict': self.target_net.state_dict(),
-            'optimizer_state_dict': self.optimizer.state_dict(),
-            'episode': episode,
-            'epsilon': float(self.epsilon),
-            'replay_buffer_size': len(self.replay_buffer),
-            'learn_counter': self.learn_counter,
-            'model_config': {
-                'state_size': self.state_size,
-                'action_size': self.action_size,
-                'hidden_size': self.hidden_size,
-                'gamma': self.gamma,
-                'epsilon_min': self.epsilon_min,
-                'epsilon_decay': self.epsilon_decay,
-                'memory_capacity': self.memory_capacity,
-                'batch_size': self.batch_size,
-                'target_update': self.target_update,
+            "model_state_dict": self.policy_net.state_dict(),
+            "target_state_dict": self.target_net.state_dict(),
+            "optimizer_state_dict": self.optimizer.state_dict(),
+            "episode": episode,
+            "epsilon": float(self.epsilon),
+            "replay_buffer_size": len(self.replay_buffer),
+            "learn_counter": self.learn_counter,
+            "model_config": {
+                "state_size": self.state_size,
+                "action_size": self.action_size,
+                "hidden_size": self.hidden_size,
+                "gamma": self.gamma,
+                "epsilon_min": self.epsilon_min,
+                "epsilon_decay": self.epsilon_decay,
+                "memory_capacity": self.memory_capacity,
+                "batch_size": self.batch_size,
+                "target_update": self.target_update,
             },
-            'action_space_values': self.action_space.tolist() if isinstance(self.action_space, np.ndarray) else list(self.action_space),
+            "action_space_values": (
+                self.action_space.tolist()
+                if isinstance(self.action_space, np.ndarray)
+                else list(self.action_space)
+            ),
         }
         checkpoint.update(kwargs)
         torch.save(checkpoint, filepath)
@@ -278,8 +276,8 @@ class DQNAgent(Agent):
         device: torch.device,
         action_space: Optional[np.ndarray] = None,
         policy_net_class: Optional[type] = None,
-        policy_net_kwargs: Optional[dict] = None
-    ) -> Tuple['DQNAgent', dict]:
+        policy_net_kwargs: Optional[dict] = None,
+    ) -> Tuple["DQNAgent", dict]:
         """
         从检查点加载智能体
 
@@ -297,36 +295,36 @@ class DQNAgent(Agent):
             raise ValueError("'device' is required")
 
         checkpoint = torch.load(filepath, map_location=device)
-        config = checkpoint['model_config']
+        config = checkpoint["model_config"]
 
         if action_space is None:
-            if 'action_space_values' in checkpoint:
-                action_space = np.array(checkpoint['action_space_values'])
+            if "action_space_values" in checkpoint:
+                action_space = np.array(checkpoint["action_space_values"])
             else:
                 raise ValueError("Action space not found in checkpoint and not provided")
 
         agent = DQNAgent(
-            state_size=config['state_size'],
-            action_size=config['action_size'],
+            state_size=config["state_size"],
+            action_size=config["action_size"],
             action_space=action_space,
             device=device,
-            gamma=config['gamma'],
-            epsilon_min=config['epsilon_min'],
-            epsilon_decay=config['epsilon_decay'],
-            memory_capacity=config['memory_capacity'],
-            batch_size=config['batch_size'],
-            target_update=config['target_update'],
-            hidden_size=config['hidden_size'],
+            gamma=config["gamma"],
+            epsilon_min=config["epsilon_min"],
+            epsilon_decay=config["epsilon_decay"],
+            memory_capacity=config["memory_capacity"],
+            batch_size=config["batch_size"],
+            target_update=config["target_update"],
+            hidden_size=config["hidden_size"],
             policy_net_class=policy_net_class,
             policy_net_kwargs=policy_net_kwargs,
         )
 
-        agent.policy_net.load_state_dict(checkpoint['model_state_dict'])
-        agent.target_net.load_state_dict(checkpoint['target_state_dict'])
-        agent.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        agent.policy_net.load_state_dict(checkpoint["model_state_dict"])
+        agent.target_net.load_state_dict(checkpoint["target_state_dict"])
+        agent.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
-        agent.epsilon = checkpoint.get('epsilon', agent.epsilon)
-        agent.learn_counter = checkpoint.get('learn_counter', 0)
+        agent.epsilon = checkpoint.get("epsilon", agent.epsilon)
+        agent.learn_counter = checkpoint.get("learn_counter", 0)
 
         return agent, checkpoint
 
@@ -344,4 +342,3 @@ class DQNAgent(Agent):
         if isinstance(value, np.ndarray):
             return float(value.item())
         return float(value)
-

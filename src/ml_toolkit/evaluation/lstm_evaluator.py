@@ -3,6 +3,7 @@
 @Date        : 2026/02/03 星期一
 @Description : LSTM 模型评估器
 """
+
 from typing import Dict, Any, Callable
 
 import torch
@@ -36,10 +37,7 @@ class LSTMEvaluator(Evaluator):
 
         # 设置默认指标
         if metrics is None:
-            self.metrics = {
-                "accuracy": calculate_accuracy,
-                "f1": calculate_f1
-            }
+            self.metrics = {"accuracy": calculate_accuracy, "f1": calculate_f1}
         else:
             self.metrics = metrics
 
@@ -78,12 +76,12 @@ class LSTMEvaluator(Evaluator):
                 batch_count += 1
 
         # 计算平均值
-        result = {
-            "loss": total_loss / batch_count if batch_count > 0 else 0.0
-        }
+        result = {"loss": total_loss / batch_count if batch_count > 0 else 0.0}
 
         for metric_name in self.metrics.keys():
-            result[metric_name] = metric_totals[metric_name] / batch_count if batch_count > 0 else 0.0
+            result[metric_name] = (
+                metric_totals[metric_name] / batch_count if batch_count > 0 else 0.0
+            )
 
         return result
 
@@ -118,4 +116,3 @@ class LSTMEvaluator(Evaluator):
         targets = torch.cat(all_targets, dim=0)
 
         return predictions, targets
-

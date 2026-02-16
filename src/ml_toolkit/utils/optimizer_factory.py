@@ -3,13 +3,13 @@
 @Date        : 2026/02/03 星期一
 @Description : 优化器工厂
 """
+
 import torch
 import torch.nn as nn
+
+
 def create_optimizer(
-    model: nn.Module,
-    optimizer_type: str,
-    learning_rate: float,
-    **kwargs
+    model: nn.Module, optimizer_type: str, learning_rate: float, **kwargs
 ) -> torch.optim.Optimizer:
     """
     创建优化器

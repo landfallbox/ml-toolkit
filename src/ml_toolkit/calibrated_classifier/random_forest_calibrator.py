@@ -1,6 +1,7 @@
 """
 RandomForest + Platt Scaling calibrated classifier.
 """
+
 from typing import Optional
 import numpy as np
 from sklearn.calibration import CalibratedClassifierCV
@@ -19,12 +20,12 @@ class RandomForestCalibratedClassifier(CalibratedClassifier):
         max_depth: Optional[int] = None,
         min_samples_split: int = 2,
         min_samples_leaf: int = 1,
-        max_features: str = 'sqrt',
-        class_weight: Optional[str] = 'balanced',
+        max_features: str = "sqrt",
+        class_weight: Optional[str] = "balanced",
         random_state: Optional[int] = None,
         n_jobs: int = -1,
-        calibration_method: str = 'sigmoid',
-        cv: int = 5
+        calibration_method: str = "sigmoid",
+        cv: int = 5,
     ):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
@@ -46,8 +47,8 @@ class RandomForestCalibratedClassifier(CalibratedClassifier):
         x_train: np.ndarray,
         y_train: np.ndarray,
         x_cal: Optional[np.ndarray] = None,
-        y_cal: Optional[np.ndarray] = None
-    ) -> 'RandomForestCalibratedClassifier':
+        y_cal: Optional[np.ndarray] = None,
+    ) -> "RandomForestCalibratedClassifier":
         self.base_clf = RandomForestClassifier(
             n_estimators=self.n_estimators,
             max_depth=self.max_depth,
@@ -56,15 +57,13 @@ class RandomForestCalibratedClassifier(CalibratedClassifier):
             max_features=self.max_features,
             class_weight=self.class_weight,
             random_state=self.random_state,
-            n_jobs=self.n_jobs
+            n_jobs=self.n_jobs,
         )
         self.base_clf.fit(x_train, y_train)
 
         frozen_clf = FrozenEstimator(self.base_clf)
         self.calibrated_clf = CalibratedClassifierCV(
-            frozen_clf,
-            method=self.calibration_method,
-            cv=self.cv if x_cal is None else None
+            frozen_clf, method=self.calibration_method, cv=self.cv if x_cal is None else None
         )
 
         if x_cal is not None and y_cal is not None:

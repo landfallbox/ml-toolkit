@@ -3,6 +3,7 @@
 @Date        : 2026/02/03 星期一
 @Description : 日志记录器（通用可复用实现）
 """
+
 import logging
 from pathlib import Path
 
@@ -32,7 +33,7 @@ class Logger:
 
     def _setup_logger(self) -> logging.Logger:
         """配置日志器"""
-        logger = logging.getLogger(f'exp_{self.experiment_dir.name}')
+        logger = logging.getLogger(f"exp_{self.experiment_dir.name}")
         logger.setLevel(logging.DEBUG)
         logger.handlers.clear()
 
@@ -40,12 +41,11 @@ class Logger:
         console_handler.setLevel(logging.INFO)
 
         log_file = self.experiment_dir / self.log_filename
-        file_handler = logging.FileHandler(log_file, mode='a', encoding='utf-8')
+        file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
         file_handler.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            "%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
         )
         console_handler.setFormatter(formatter)
         file_handler.setFormatter(formatter)

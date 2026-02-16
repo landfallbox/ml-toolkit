@@ -42,5 +42,6 @@ for i in range(3):
     augmented_combined = noise_augmenter.augment(augmented_combined)
 
 print(f"多次增强后的序列形状: {augmented_combined.shape}")
-print(f"多次增强后与原始序列的差异 (RMSE): {np.sqrt(np.mean((sequence - augmented_combined) ** 2)):.4f}")
-
+print(
+    f"多次增强后与原始序列的差异 (RMSE): {np.sqrt(np.mean((sequence - augmented_combined) ** 2)):.4f}"
+)

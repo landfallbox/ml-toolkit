@@ -3,6 +3,7 @@
 @Date        : 2025/11/18 星期二 15:18
 @Description : LSTM 模型定义（通用可复用实现）
 """
+
 import torch.nn as nn
 
 
@@ -15,8 +16,14 @@ class LSTM(nn.Module):
         - 一层全连接输出层
     """
 
-    def __init__(self, input_size: int, hidden_sizes: list[int], output_size: int,
-                 batch_first: bool = True, dropout: float = 0.0):
+    def __init__(
+        self,
+        input_size: int,
+        hidden_sizes: list[int],
+        output_size: int,
+        batch_first: bool = True,
+        dropout: float = 0.0,
+    ):
         """
         初始化 LSTM 模型
 
@@ -53,7 +60,7 @@ class LSTM(nn.Module):
                 hidden_size=current_hidden_size,
                 num_layers=1,  # 每个 LSTM 模块只包含 1 层
                 batch_first=batch_first,
-                dropout=0.0  # 在单层 LSTM 中不使用内置 dropout
+                dropout=0.0,  # 在单层 LSTM 中不使用内置 dropout
             )
             self.lstm_layers.append(lstm_layer)
 
@@ -72,11 +79,11 @@ class LSTM(nn.Module):
         for layer in self.lstm_layers:
             if isinstance(layer, nn.LSTM):
                 for name, param in layer.named_parameters():
-                    if 'weight_ih' in name:
+                    if "weight_ih" in name:
                         nn.init.xavier_uniform_(param.data)
-                    elif 'weight_hh' in name:
+                    elif "weight_hh" in name:
                         nn.init.orthogonal_(param.data)
-                    elif 'bias' in name:
+                    elif "bias" in name:
                         param.data.fill_(0)
 
         # 初始化全连接层
@@ -132,7 +139,7 @@ class LSTM(nn.Module):
             "output_size": self.output_size,
             "dropout": self.dropout,
             "total_parameters": total_params,
-            "trainable_parameters": trainable_params
+            "trainable_parameters": trainable_params,
         }
 
         return info

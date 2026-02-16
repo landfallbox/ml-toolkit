@@ -4,6 +4,7 @@
 
 高斯噪声增强实现。
 """
+
 from typing import Tuple, Optional
 import numpy as np
 
@@ -22,7 +23,7 @@ class SequenceNoiseAugmentation(DataAugmentationStrategy):
         target_class: int = 1,
         augmentation_factor: int = 1,
         noise_scale: float = 0.02,
-        random_state: Optional[int] = None
+        random_state: Optional[int] = None,
     ):
         """
         Args:
@@ -40,10 +41,7 @@ class SequenceNoiseAugmentation(DataAugmentationStrategy):
             np.random.seed(random_state)
 
     def augment(
-        self,
-        sequences: np.ndarray,
-        labels: np.ndarray,
-        time_indices: np.ndarray
+        self, sequences: np.ndarray, labels: np.ndarray, time_indices: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         对指定类别的样本进行高斯噪声增强
@@ -90,4 +88,3 @@ class SequenceNoiseAugmentation(DataAugmentationStrategy):
         final_time_indices = np.concatenate(augmented_time_indices_list, axis=0)
 
         return final_sequences, final_labels, final_time_indices
-

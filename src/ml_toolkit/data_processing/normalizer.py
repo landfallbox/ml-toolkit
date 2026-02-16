@@ -3,6 +3,7 @@
 @Date        : 2026/02/03 星期一
 @Description : 数据归一化器（通用可复用实现）
 """
+
 import json
 from pathlib import Path
 
@@ -148,10 +149,10 @@ class Normalizer:
             "mean": self.mean,
             "std": self.std,
             "columns": self.columns,
-            "epsilon": self.epsilon
+            "epsilon": self.epsilon,
         }
 
-        with open(path, 'w', encoding='utf-8') as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(params, f, indent=2, ensure_ascii=False)
 
     def load(self, path: Path) -> None:
@@ -165,7 +166,7 @@ class Normalizer:
         if not path.exists():
             raise FileNotFoundError(f"归一化参数文件不存在: {path}")
 
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             params = json.load(f)
 
         self.mean = params["mean"]
@@ -194,10 +195,10 @@ class Normalizer:
                 "mean": normalizer.mean,
                 "std": normalizer.std,
                 "columns": normalizer.columns,
-                "epsilon": normalizer.epsilon
+                "epsilon": normalizer.epsilon,
             }
 
-        with open(path, 'w', encoding='utf-8') as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(all_params, f, indent=2, ensure_ascii=False)
 
     @staticmethod
@@ -215,7 +216,7 @@ class Normalizer:
         if not path.exists():
             raise FileNotFoundError(f"归一化参数文件不存在: {path}")
 
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             all_params = json.load(f)
 
         normalizers = {}

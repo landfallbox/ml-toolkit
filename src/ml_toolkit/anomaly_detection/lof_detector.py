@@ -4,6 +4,7 @@
 
 LocalOutlierFactor 异常检测器实现。
 """
+
 import numpy as np
 from sklearn.neighbors import LocalOutlierFactor
 
@@ -18,7 +19,7 @@ class LocalOutlierFactorDetector(AnomalyDetector):
         n_neighbors: int = 20,
         contamination: float = 0.1,
         n_jobs: int = -1,
-        novelty: bool = True
+        novelty: bool = True,
     ):
         self.n_neighbors = n_neighbors
         self.contamination = contamination
@@ -28,12 +29,12 @@ class LocalOutlierFactorDetector(AnomalyDetector):
         self.model: LocalOutlierFactor | None = None
         self.is_fitted = False
 
-    def fit(self, x: np.ndarray) -> 'LocalOutlierFactorDetector':
+    def fit(self, x: np.ndarray) -> "LocalOutlierFactorDetector":
         self.model = LocalOutlierFactor(
             n_neighbors=self.n_neighbors,
             contamination=self.contamination,
             n_jobs=self.n_jobs,
-            novelty=self.novelty
+            novelty=self.novelty,
         )
         self.model.fit(x)
         self.is_fitted = True

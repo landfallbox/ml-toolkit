@@ -4,6 +4,7 @@
 
 IsolationForest 异常检测器实现。
 """
+
 from typing import Optional
 import numpy as np
 from sklearn.ensemble import IsolationForest
@@ -19,7 +20,7 @@ class IsolationForestAnomalyDetector(AnomalyDetector):
         contamination: float = 0.1,
         n_estimators: int = 100,
         random_state: Optional[int] = None,
-        n_jobs: int = -1
+        n_jobs: int = -1,
     ):
         self.contamination = contamination
         self.n_estimators = n_estimators
@@ -29,12 +30,12 @@ class IsolationForestAnomalyDetector(AnomalyDetector):
         self.model: IsolationForest | None = None
         self.is_fitted = False
 
-    def fit(self, x: np.ndarray) -> 'IsolationForestAnomalyDetector':
+    def fit(self, x: np.ndarray) -> "IsolationForestAnomalyDetector":
         self.model = IsolationForest(
             contamination=self.contamination,
             n_estimators=self.n_estimators,
             random_state=self.random_state,
-            n_jobs=self.n_jobs
+            n_jobs=self.n_jobs,
         )
         self.model.fit(x)
         self.is_fitted = True
@@ -49,4 +50,3 @@ class IsolationForestAnomalyDetector(AnomalyDetector):
         if not self.is_fitted:
             raise RuntimeError("Model not fitted. Call fit() first.")
         return self.model.predict(x)
-

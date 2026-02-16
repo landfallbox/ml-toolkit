@@ -22,12 +22,14 @@ __all__ = [
 # 可选的可视化和超参数优化工具（需要额外依赖）
 try:
     from .visualizer import Visualizer
+
     __all__.append("Visualizer")
 except ImportError:
     pass
 
 try:
     from .hyperparameter_optimizer import HyperparameterSpace, BayesianOptimizer
+
     __all__.extend(["HyperparameterSpace", "BayesianOptimizer"])
 except ImportError:
     pass

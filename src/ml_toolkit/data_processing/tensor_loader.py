@@ -3,6 +3,7 @@
 @Date        : 2026/02/03 星期一
 @Description : 张量加载和转换工具
 """
+
 import torch
 import pandas as pd
 import numpy as np
@@ -15,6 +16,7 @@ from typing import Optional
 @dataclass
 class DataLoaderConfig:
     """数据加载器配置类"""
+
     batch_size: int
     shuffle_train: bool = True
     shuffle_val: bool = False
@@ -25,8 +27,7 @@ class DataLoaderConfig:
 
 
 def load_csv_to_tensor(
-    file_path: Path,
-    target_column_name: str
+    file_path: Path, target_column_name: str
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """
     加载CSV文件并转换为PyTorch张量
@@ -63,10 +64,10 @@ def load_csv_to_tensor(
     features_tensor = torch.from_numpy(features)
     targets_tensor = torch.from_numpy(targets)
     return features_tensor, targets_tensor
+
+
 def reshape_to_sequence_format(
-    features: torch.Tensor,
-    seq_length: int,
-    input_size: int
+    features: torch.Tensor, seq_length: int, input_size: int
 ) -> torch.Tensor:
     """
     将特征张量reshape为RNN序列格式（用于LSTM、GRU等循环神经网络）
@@ -82,11 +83,11 @@ def reshape_to_sequence_format(
     num_samples = features.shape[0]
     expected_features = seq_length * input_size
     if features.shape[1] != expected_features:
-        raise ValueError(
-            f"特征维度不匹配。期望 {expected_features}，实际 {features.shape[1]}"
-        )
+        raise ValueError(f"特征维度不匹配。期望 {expected_features}，实际 {features.shape[1]}")
     reshaped = features.reshape(num_samples, seq_length, input_size)
     return reshaped
+
+
 def create_data_loaders(
     train_features: torch.Tensor,
     train_targets: torch.Tensor,
@@ -96,7 +97,7 @@ def create_data_loaders(
     test_targets: torch.Tensor,
     batch_size: Optional[int] = None,
     shuffle_train: bool = True,
-    config: Optional[DataLoaderConfig] = None
+    config: Optional[DataLoaderConfig] = None,
 ) -> tuple[DataLoader, DataLoader, DataLoader]:
     """
     创建训练、验证、测试数据加载器
@@ -116,10 +117,7 @@ def create_data_loaders(
     if config is None:
         if batch_size is None:
             raise ValueError("必须提供 batch_size 或 config 参数")
-        config = DataLoaderConfig(
-            batch_size=batch_size,
-            shuffle_train=shuffle_train
-        )
+        config = DataLoaderConfig(batch_size=batch_size, shuffle_train=shuffle_train)
 
     train_dataset = TensorDataset(train_features, train_targets)
     val_dataset = TensorDataset(val_features, val_targets)
@@ -131,21 +129,21 @@ def create_data_loaders(
         shuffle=config.shuffle_train,
         num_workers=config.num_workers,
         pin_memory=config.pin_memory,
-        drop_last=config.drop_last
+        drop_last=config.drop_last,
     )
     val_loader = DataLoader(
         val_dataset,
         batch_size=config.batch_size,
         shuffle=config.shuffle_val,
         num_workers=config.num_workers,
-        pin_memory=config.pin_memory
+        pin_memory=config.pin_memory,
     )
     test_loader = DataLoader(
         test_dataset,
         batch_size=config.batch_size,
         shuffle=config.shuffle_test,
         num_workers=config.num_workers,
-        pin_memory=config.pin_memory
+        pin_memory=config.pin_memory,
     )
 
     return train_loader, val_loader, test_loader

@@ -4,6 +4,7 @@
 
 异常检测基类定义。
 """
+
 from abc import ABC, abstractmethod
 import numpy as np
 
@@ -12,7 +13,7 @@ class AnomalyDetector(ABC):
     """异常检测基类，定义统一接口。"""
 
     @abstractmethod
-    def fit(self, x: np.ndarray) -> 'AnomalyDetector':
+    def fit(self, x: np.ndarray) -> "AnomalyDetector":
         """训练异常检测模型"""
         raise NotImplementedError
 
@@ -25,4 +26,3 @@ class AnomalyDetector(ABC):
     def predict(self, x: np.ndarray) -> np.ndarray:
         """预测异常标签"""
         raise NotImplementedError
-

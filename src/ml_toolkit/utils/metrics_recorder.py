@@ -3,6 +3,7 @@
 @Date        : 2026/02/04 星期二
 @Description : 指标记录器
 """
+
 import json
 import torch
 from datetime import datetime
@@ -24,7 +25,7 @@ class MetricsRecorder:
         self,
         experiment_dir: Path,
         metrics_filename: Optional[str] = None,
-        history_filename: Optional[str] = None
+        history_filename: Optional[str] = None,
     ):
         """
         初始化指标记录器
@@ -55,15 +56,11 @@ class MetricsRecorder:
             metrics: 指标字典
             step: 步骤编号（可选）
         """
-        entry = {
-            'timestamp': datetime.now().isoformat(),
-            'step': step,
-            **self._to_native(metrics)
-        }
+        entry = {"timestamp": datetime.now().isoformat(), "step": step, **self._to_native(metrics)}
 
         self.metrics.append(entry)
         metrics_file = self.experiment_dir / self.metrics_filename
-        with open(metrics_file, 'w', encoding='utf-8') as f:
+        with open(metrics_file, "w", encoding="utf-8") as f:
             json.dump(self.metrics, f, indent=2, ensure_ascii=False)
 
     def load_metrics(self) -> Dict[str, Any]:
@@ -81,7 +78,7 @@ class MetricsRecorder:
         if not metrics_file.exists():
             raise FileNotFoundError(f"指标文件不存在: {metrics_file}")
 
-        with open(metrics_file, 'r', encoding='utf-8') as f:
+        with open(metrics_file, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         # 如果是列表格式，返回最后一项；如果是字典，直接返回
@@ -144,6 +141,7 @@ class MetricsRecorder:
             Python 原生类型对象
         """
         import numpy as np
+
         if isinstance(obj, (torch.Tensor, np.ndarray)):
             return obj.item() if obj.numel() == 1 else obj.tolist()
         elif isinstance(obj, dict):

@@ -3,6 +3,7 @@
 @Date        : 2026/02/04 星期二
 @Description : 通用贝叶斯超参优化器
 """
+
 import json
 from pathlib import Path
 from typing import Dict, Any, Callable, Optional
@@ -30,7 +31,9 @@ class HyperparameterSpace:
         self.params[name] = {"type": "int", "low": low, "high": high}
         return self
 
-    def add_float(self, name: str, low: float, high: float, log: bool = False) -> "HyperparameterSpace":
+    def add_float(
+        self, name: str, low: float, high: float, log: bool = False
+    ) -> "HyperparameterSpace":
         """
         添加浮点数类型超参
 
@@ -69,7 +72,7 @@ class BayesianOptimizer:
         space: HyperparameterSpace,
         output_dir: Path,
         sampler: str = "tpe",
-        seed: Optional[int] = None
+        seed: Optional[int] = None,
     ):
         """
         初始化贝叶斯优化器
@@ -99,11 +102,7 @@ class BayesianOptimizer:
         else:
             raise ValueError(f"不支持的采样器类型: {self.sampler}")
 
-    def _objective_wrapper(
-        self,
-        objective_fn: Callable,
-        **objective_kwargs
-    ) -> Callable:
+    def _objective_wrapper(self, objective_fn: Callable, **objective_kwargs) -> Callable:
         """
         包装目标函数，使其适配 Optuna 接口
 
@@ -114,6 +113,7 @@ class BayesianOptimizer:
         返回：
             Optuna 兼容的目标函数
         """
+
         def optuna_objective(trial: optuna.Trial) -> float:
             # 从 trial 中建议超参
             params = {}
@@ -121,21 +121,18 @@ class BayesianOptimizer:
                 param_type = param_config["type"]
                 if param_type == "int":
                     params[param_name] = trial.suggest_int(
-                        param_name,
-                        param_config["low"],
-                        param_config["high"]
+                        param_name, param_config["low"], param_config["high"]
                     )
                 elif param_type == "float":
                     params[param_name] = trial.suggest_float(
                         param_name,
                         param_config["low"],
                         param_config["high"],
-                        log=param_config.get("log", False)
+                        log=param_config.get("log", False),
                     )
                 elif param_type == "categorical":
                     params[param_name] = trial.suggest_categorical(
-                        param_name,
-                        param_config["choices"]
+                        param_name, param_config["choices"]
                     )
 
             # 调用用户目标函数
@@ -145,10 +142,7 @@ class BayesianOptimizer:
         return optuna_objective
 
     def optimize(
-        self,
-        objective_fn: Callable,
-        n_trials: int = 100,
-        **objective_kwargs
+        self, objective_fn: Callable, n_trials: int = 100, **objective_kwargs
     ) -> Dict[str, Any]:
         """
         执行贝叶斯优化
@@ -167,11 +161,7 @@ class BayesianOptimizer:
         # 创建 Study
         sampler = self._create_sampler()
         pruner = MedianPruner()
-        self.study = optuna.create_study(
-            direction="minimize",
-            sampler=sampler,
-            pruner=pruner
-        )
+        self.study = optuna.create_study(direction="minimize", sampler=sampler, pruner=pruner)
 
         # 执行优化
         self.study.optimize(optuna_objective, n_trials=n_trials)
@@ -186,7 +176,7 @@ class BayesianOptimizer:
         return {
             "best_params": self.best_params,
             "best_value": self.best_value,
-            "n_trials": len(self.study.trials)
+            "n_trials": len(self.study.trials),
         }
 
     def _round_param_value(self, name: str, value: Any) -> Any:
@@ -211,7 +201,7 @@ class BayesianOptimizer:
             "best_params_rounded": self._round_params(self.best_params),
             "best_value": self.best_value,
             "n_trials": len(self.study.trials),
-            "trials": []
+            "trials": [],
         }
 
         # 记录每一轮的结果
@@ -222,7 +212,7 @@ class BayesianOptimizer:
                 "params_raw": trial.params,
                 "params_rounded": self._round_params(trial.params),
                 "value": trial.value,
-                "state": trial.state.name
+                "state": trial.state.name,
             }
             results["trials"].append(trial_record)
 
@@ -243,12 +233,14 @@ class BayesianOptimizer:
 
         history = []
         for trial in self.study.trials:
-            history.append({
-                "trial": trial.number,
-                "params": trial.params,
-                "value": trial.value,
-                "state": trial.state.name
-            })
+            history.append(
+                {
+                    "trial": trial.number,
+                    "params": trial.params,
+                    "value": trial.value,
+                    "state": trial.state.name,
+                }
+            )
         return history
 
     def get_best_params(self) -> Dict[str, Any]:

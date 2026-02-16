@@ -3,14 +3,11 @@
 @Date        : 2026/02/04 星期二
 @Description : 数据集加载器，统一处理数据加载和预处理流程
 """
+
 from typing import Tuple, Dict, Optional
 
 from .normalizer import Normalizer
-from .tensor_loader import (
-    load_csv_to_tensor,
-    reshape_to_sequence_format,
-    create_data_loaders
-)
+from .tensor_loader import load_csv_to_tensor, reshape_to_sequence_format, create_data_loaders
 from torch.utils.data import DataLoader
 
 
@@ -36,9 +33,7 @@ class DatasetLoader:
         self.normalizers = None
 
     def load_data(
-        self,
-        load_normalizer: bool = True,
-        reshape_for_rnn: bool = False
+        self, load_normalizer: bool = True, reshape_for_rnn: bool = False
     ) -> Tuple[DataLoader, DataLoader, DataLoader]:
         """
         加载数据并创建 DataLoader
@@ -67,8 +62,8 @@ class DatasetLoader:
 
         # 如果需要，reshape 为 RNN 序列格式
         if reshape_for_rnn:
-            window_length = getattr(self.config, 'WINDOW_LENGTH', None)
-            input_size = getattr(self.config, 'INPUT_SIZE', None)
+            window_length = getattr(self.config, "WINDOW_LENGTH", None)
+            input_size = getattr(self.config, "INPUT_SIZE", None)
 
             if window_length is None or input_size is None:
                 raise ValueError("配置中缺少 WINDOW_LENGTH 或 INPUT_SIZE，无法 reshape 为 RNN 格式")
@@ -79,10 +74,13 @@ class DatasetLoader:
 
         # 创建数据加载器
         train_loader, val_loader, test_loader = create_data_loaders(
-            train_features, train_targets,
-            val_features, val_targets,
-            test_features, test_targets,
-            batch_size=self.config.BATCH_SIZE
+            train_features,
+            train_targets,
+            val_features,
+            val_targets,
+            test_features,
+            test_targets,
+            batch_size=self.config.BATCH_SIZE,
         )
 
         return train_loader, val_loader, test_loader
@@ -104,9 +102,9 @@ class DatasetLoader:
             包含数据集路径、特征列等信息的字典
         """
         return {
-            'train_path': self.config.get_train_data_path(),
-            'val_path': self.config.get_val_data_path(),
-            'test_path': self.config.get_test_data_path(),
-            'target_column': self.config.TARGET_COLUMN,
-            'batch_size': self.config.BATCH_SIZE
+            "train_path": self.config.get_train_data_path(),
+            "val_path": self.config.get_val_data_path(),
+            "test_path": self.config.get_test_data_path(),
+            "target_column": self.config.TARGET_COLUMN,
+            "batch_size": self.config.BATCH_SIZE,
         }

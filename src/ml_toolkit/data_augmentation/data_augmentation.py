@@ -4,6 +4,7 @@
 
 数据增强基类定义。
 """
+
 from abc import ABC, abstractmethod
 from typing import Tuple, Optional
 import numpy as np
@@ -14,10 +15,7 @@ class DataAugmentationStrategy(ABC):
 
     @abstractmethod
     def augment(
-        self,
-        sequences: np.ndarray,
-        labels: np.ndarray,
-        time_indices: np.ndarray
+        self, sequences: np.ndarray, labels: np.ndarray, time_indices: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         对数据进行增强
@@ -48,10 +46,6 @@ class DataAugmentationStrategy(ABC):
 
         distribution = {}
         for label, count in zip(unique_labels, counts):
-            distribution[int(label)] = {
-                'count': int(count),
-                'ratio': float(count / total)
-            }
+            distribution[int(label)] = {"count": int(count), "ratio": float(count / total)}
 
         return distribution
-

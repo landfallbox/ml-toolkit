@@ -3,16 +3,13 @@
 @Date        : 2026/02/03 星期一
 @Description : 通用评估指标函数（可复用）
 """
+
 import torch
 import torch.nn.functional as F
 from torch import Tensor
 
 
-def calculate_loss(
-    outputs: Tensor,
-    targets: Tensor,
-    loss_type: str = "mse"
-) -> float:
+def calculate_loss(outputs: Tensor, targets: Tensor, loss_type: str = "mse") -> float:
     """
     计算损失值
 
@@ -41,11 +38,7 @@ def calculate_loss(
     return loss.item()
 
 
-def calculate_accuracy(
-    outputs: Tensor,
-    targets: Tensor,
-    threshold: float = 0.5
-) -> float:
+def calculate_accuracy(outputs: Tensor, targets: Tensor, threshold: float = 0.5) -> float:
     """
     计算精度（用于分类任务）
 
@@ -71,10 +64,7 @@ def calculate_accuracy(
 
 
 def calculate_f1(
-    outputs: Tensor,
-    targets: Tensor,
-    threshold: float = 0.5,
-    average: str = "binary"
+    outputs: Tensor, targets: Tensor, threshold: float = 0.5, average: str = "binary"
 ) -> float:
     """
     计算 F1 分数（支持二分类和多分类）
@@ -96,8 +86,16 @@ def calculate_f1(
         false_positive = ((predictions == 1) & (targets == 0)).sum().item()
         false_negative = ((predictions == 0) & (targets == 1)).sum().item()
 
-        precision = true_positive / (true_positive + false_positive) if (true_positive + false_positive) > 0 else 0.0
-        recall = true_positive / (true_positive + false_negative) if (true_positive + false_negative) > 0 else 0.0
+        precision = (
+            true_positive / (true_positive + false_positive)
+            if (true_positive + false_positive) > 0
+            else 0.0
+        )
+        recall = (
+            true_positive / (true_positive + false_negative)
+            if (true_positive + false_negative) > 0
+            else 0.0
+        )
 
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -126,7 +124,9 @@ def calculate_f1(
 
             precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
             recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-            f1_cls = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+            f1_cls = (
+                2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+            )
 
             f1_per_class.append(f1_cls)
             class_weights.append((targets == cls).sum().item())
@@ -143,10 +143,7 @@ def calculate_f1(
             raise ValueError(f"不支持的平均方式: {average}，支持: binary, macro, micro, weighted")
 
 
-def calculate_mape(
-    outputs: Tensor,
-    targets: Tensor
-) -> float:
+def calculate_mape(outputs: Tensor, targets: Tensor) -> float:
     """
     计算平均绝对百分比误差（Mean Absolute Percentage Error）
 
@@ -174,10 +171,7 @@ def calculate_mape(
 
 
 def calculate_precision(
-    outputs: Tensor,
-    targets: Tensor,
-    threshold: float = 0.5,
-    average: str = "binary"
+    outputs: Tensor, targets: Tensor, threshold: float = 0.5, average: str = "binary"
 ) -> float:
     """
     计算精确率（Precision）
@@ -236,10 +230,7 @@ def calculate_precision(
 
 
 def calculate_recall(
-    outputs: Tensor,
-    targets: Tensor,
-    threshold: float = 0.5,
-    average: str = "binary"
+    outputs: Tensor, targets: Tensor, threshold: float = 0.5, average: str = "binary"
 ) -> float:
     """
     计算召回率（Recall）
@@ -297,10 +288,7 @@ def calculate_recall(
             raise ValueError(f"不支持的平均方式: {average}")
 
 
-def calculate_mae(
-    outputs: Tensor,
-    targets: Tensor
-) -> float:
+def calculate_mae(outputs: Tensor, targets: Tensor) -> float:
     """
     计算平均绝对误差（Mean Absolute Error）
 
@@ -315,10 +303,7 @@ def calculate_mae(
     return mae
 
 
-def calculate_rmse(
-    outputs: Tensor,
-    targets: Tensor
-) -> float:
+def calculate_rmse(outputs: Tensor, targets: Tensor) -> float:
     """
     计算均方根误差（Root Mean Square Error）
 
@@ -330,14 +315,11 @@ def calculate_rmse(
         RMSE 值
     """
     mse = ((outputs - targets) ** 2).mean().item()
-    rmse = mse ** 0.5
+    rmse = mse**0.5
     return rmse
 
 
-def calculate_r2_score(
-    outputs: Tensor,
-    targets: Tensor
-) -> float:
+def calculate_r2_score(outputs: Tensor, targets: Tensor) -> float:
     """
     计算 R² 分数（决定系数）
 

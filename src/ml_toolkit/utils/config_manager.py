@@ -3,6 +3,7 @@
 @Date        : 2026/02/04 星期二
 @Description : 配置管理器（通用可复用实现）
 """
+
 import yaml
 from pathlib import Path
 from typing import Dict, Any, Optional
@@ -40,7 +41,7 @@ class ConfigManager:
         if filename is None:
             filename = self.config_filename
         config_file = self.experiment_dir / filename
-        with open(config_file, 'w', encoding='utf-8') as f:
+        with open(config_file, "w", encoding="utf-8") as f:
             yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
 
     def load_config(self, filename: Optional[str] = None) -> Dict[str, Any]:
@@ -58,6 +59,6 @@ class ConfigManager:
         config_file = self.experiment_dir / filename
         if not config_file.exists():
             raise FileNotFoundError(f"配置文件不存在: {config_file}")
-        with open(config_file, 'r', encoding='utf-8') as f:
+        with open(config_file, "r", encoding="utf-8") as f:
             config = yaml.safe_load(f)
         return config

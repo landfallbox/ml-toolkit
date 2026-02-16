@@ -1,6 +1,7 @@
 """
 Base interface for calibrated classifiers.
 """
+
 from abc import ABC, abstractmethod
 from typing import Optional
 import numpy as np
@@ -16,7 +17,7 @@ class CalibratedClassifier(ABC):
         y_train: np.ndarray,
         x_cal: Optional[np.ndarray] = None,
         y_cal: Optional[np.ndarray] = None,
-    ) -> 'CalibratedClassifier':
+    ) -> "CalibratedClassifier":
         """训练并校准分类器"""
         raise NotImplementedError
 
@@ -29,4 +30,3 @@ class CalibratedClassifier(ABC):
     def predict(self, x: np.ndarray) -> np.ndarray:
         """预测类别"""
         raise NotImplementedError
-

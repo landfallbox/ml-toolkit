@@ -53,13 +53,8 @@ if len(replay_buffer) >= batch_size:
 # 示例 2: 创建 DQN Agent
 print("DQN Agent")
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-agent = DQNAgent(
-    state_size=state_size,
-    action_size=action_size,
-    device=device,
-    lr=lr
-)
+device = "cuda" if torch.cuda.is_available() else "cpu"
+agent = DQNAgent(state_size=state_size, action_size=action_size, device=device, lr=lr)
 
 print(f"DQN Agent 已创建 (device: {device})")
 print(f"网络: {agent.q_network}")
@@ -76,4 +71,3 @@ print(f"选择的动作: {action}")
 # 多次选择动作
 actions = [agent.select_action(np.random.randn(state_size), epsilon) for _ in range(10)]
 print(f"10 个随机状态的动作选择: {actions}")
-

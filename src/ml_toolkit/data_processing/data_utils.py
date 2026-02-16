@@ -29,10 +29,7 @@ def select_columns(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
 
 
 def split_data(
-    df: pd.DataFrame,
-    ratios: list[float],
-    shuffle: bool = True,
-    random_state: int | None = None
+    df: pd.DataFrame, ratios: list[float], shuffle: bool = True, random_state: int | None = None
 ) -> list[pd.DataFrame]:
     """
     按指定比例划分 DataFrame 为多个部分
@@ -90,9 +87,7 @@ def split_data(
 
 
 def build_temporal_features(
-    df: pd.DataFrame,
-    feature_columns: list[str],
-    window_length: int
+    df: pd.DataFrame, feature_columns: list[str], window_length: int
 ) -> pd.DataFrame:
     """
     构建时序特征，将之前 n 个时刻的特征拼接到当前行
@@ -135,7 +130,6 @@ def build_temporal_features(
                 ordered_columns.append(f"{col}_lag{lag}")
 
     result_df = temp_df[ordered_columns].copy()
-    result_df = result_df.iloc[window_length - 1:].reset_index(drop=True)
+    result_df = result_df.iloc[window_length - 1 :].reset_index(drop=True)
 
     return result_df
-

@@ -3,6 +3,7 @@
 @Date        : 2026/02/03 星期一
 @Description : 模型检查点管理器（通用可复用实现）
 """
+
 import torch
 from pathlib import Path
 from typing import Optional, Dict, Any
@@ -40,7 +41,7 @@ class CheckpointManager:
         config: Optional[Dict[str, Any]],
         filename: str = "checkpoint.pth",
         is_best: bool = False,
-        best_filename: str = "best_model.pth"
+        best_filename: str = "best_model.pth",
     ):
         """
         保存检查点
@@ -56,14 +57,14 @@ class CheckpointManager:
             best_filename: 最佳模型的文件名
         """
         state = {
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'metrics': metrics,
-            'config': config
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "metrics": metrics,
+            "config": config,
         }
 
         if optimizer is not None:
-            state['optimizer_state_dict'] = optimizer.state_dict()
+            state["optimizer_state_dict"] = optimizer.state_dict()
 
         filepath = self.checkpoints_dir / filename
         torch.save(state, filepath)
@@ -77,7 +78,7 @@ class CheckpointManager:
         filepath: Path,
         model: torch.nn.Module,
         optimizer: Optional[torch.optim.Optimizer] = None,
-        map_location=None
+        map_location=None,
     ) -> Dict[str, Any]:
         """
         加载检查点到模型和优化器
@@ -96,18 +97,16 @@ class CheckpointManager:
 
         checkpoint = torch.load(filepath, map_location=map_location)
 
-        model.load_state_dict(checkpoint['model_state_dict'])
+        model.load_state_dict(checkpoint["model_state_dict"])
 
-        if optimizer is not None and 'optimizer_state_dict' in checkpoint:
-            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        if optimizer is not None and "optimizer_state_dict" in checkpoint:
+            optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
         return checkpoint
 
     @staticmethod
     def find_latest_experiment(
-        experiment_name: str,
-        mode: str = "train",
-        log_root_dir: Optional[Path] = None
+        experiment_name: str, mode: str = "train", log_root_dir: Optional[Path] = None
     ) -> Optional[Path]:
         """
         查找指定实验的最新实验目录
@@ -150,7 +149,7 @@ class CheckpointManager:
         model: torch.nn.Module,
         best_filename: str = "best_model.pth",
         checkpoint_dir_name: str = "checkpoints",
-        map_location=None
+        map_location=None,
     ) -> Dict[str, Any]:
         """
         从实验目录加载最优模型
@@ -171,6 +170,6 @@ class CheckpointManager:
             raise FileNotFoundError(f"最优模型文件不存在: {checkpoint_path}")
 
         checkpoint = torch.load(checkpoint_path, map_location=map_location)
-        model.load_state_dict(checkpoint['model_state_dict'])
+        model.load_state_dict(checkpoint["model_state_dict"])
 
         return checkpoint

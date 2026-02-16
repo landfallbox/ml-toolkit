@@ -4,6 +4,7 @@
 
 强化学习智能体基类定义。
 """
+
 from abc import ABC, abstractmethod
 from typing import Tuple
 
@@ -39,11 +40,7 @@ class Agent(ABC):
 
     @abstractmethod
     def store_transition(
-        self,
-        state: np.ndarray,
-        action: int,
-        reward: float,
-        next_state: np.ndarray
+        self, state: np.ndarray, action: int, reward: float, next_state: np.ndarray
     ) -> None:
         """
         存储经验转移
@@ -75,8 +72,8 @@ class Agent(ABC):
         device,
         action_space: np.ndarray | None = None,
         policy_net_class: type | None = None,
-        policy_net_kwargs: dict | None = None
-    ) -> Tuple['Agent', dict]:
+        policy_net_kwargs: dict | None = None,
+    ) -> Tuple["Agent", dict]:
         """
         加载检查点
 
@@ -91,4 +88,3 @@ class Agent(ABC):
             (智能体实例, 检查点字典)
         """
         raise NotImplementedError
-
