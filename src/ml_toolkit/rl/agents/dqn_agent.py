@@ -2,52 +2,15 @@
 DQN 智能体实现。
 """
 
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as f
 
 from .agent import Agent
-from .replay_buffer import ReplayBuffer
-
-
-class DQNNetwork(nn.Module):
-    """
-    DQN 默认网络：2层 MLP 映射状态 -> 各动作的Q值
-
-    用户可以继承 nn.Module 创建自定义网络并注入到 DQNAgent，
-    必须实现 forward(x) 方法和 get_model_info() 方法。
-    """
-
-    def __init__(self, state_size: int, action_size: int, hidden_size: int = 128) -> None:
-        super(DQNNetwork, self).__init__()
-        self.state_size = state_size
-        self.action_size = action_size
-        self.hidden_size = hidden_size
-
-        self.fc1 = nn.Linear(state_size, hidden_size)
-        self.fc2 = nn.Linear(hidden_size, action_size)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """前向传播"""
-        x = f.relu(self.fc1(x))
-        return self.fc2(x)
-
-    def get_model_info(self) -> dict:
-        """获取模型信息"""
-        total_params = sum(p.numel() for p in self.parameters())
-        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
-
-        return {
-            "model_name": "DQN_MLP",
-            "state_size": self.state_size,
-            "action_size": self.action_size,
-            "hidden_size": self.hidden_size,
-            "total_parameters": total_params,
-            "trainable_parameters": trainable_params,
-        }
+from ..buffers.replay_buffer import ReplayBuffer
+from ..networks.q_network import QNetwork
 
 
 class DQNAgent(Agent):
@@ -93,7 +56,7 @@ class DQNAgent(Agent):
             batch_size: 批大小
             target_update: 目标网络更新频率（学习步数）
             hidden_size: 隐层大小（仅在使用默认网络时有效）
-            policy_net_class: 自定义网络类（继承 nn.Module），默认为 DQNNetwork
+            policy_net_class: 自定义网络类（继承 nn.Module），默认为 QNetwork
             policy_net_kwargs: 传给自定义网络的额外参数字典
         """
         self.state_size = state_size
@@ -108,7 +71,7 @@ class DQNAgent(Agent):
         self.target_update = target_update
         self.device = device
         self.hidden_size = hidden_size
-        self.policy_net_class = policy_net_class or DQNNetwork
+        self.policy_net_class = policy_net_class or QNetwork
         self.policy_net_kwargs = policy_net_kwargs or {}
 
         # 创建网络实例
@@ -125,17 +88,26 @@ class DQNAgent(Agent):
     def _create_networks(self) -> None:
         """创建策略网络和目标网络"""
         # 构建网络初始化参数
-        net_kwargs = {
+        net_kwargs: dict[str, Any] = {
             "state_size": self.state_size,
             "action_size": self.action_size,
         }
 
-        # 如果用户没有提供自定义参数，使用默认的 hidden_size
-        if "hidden_size" not in self.policy_net_kwargs:
-            net_kwargs["hidden_size"] = self.hidden_size
+        extra_kwargs = dict(self.policy_net_kwargs)
+
+        # 对默认 QNetwork 统一转换为 hidden_sizes 参数
+        if self.policy_net_class is QNetwork:
+            if "hidden_sizes" not in extra_kwargs:
+                if "hidden_size" in extra_kwargs:
+                    extra_kwargs["hidden_sizes"] = [int(extra_kwargs.pop("hidden_size"))]
+                else:
+                    extra_kwargs["hidden_sizes"] = [self.hidden_size]
+        else:
+            if "hidden_size" not in extra_kwargs and "hidden_sizes" not in extra_kwargs:
+                extra_kwargs["hidden_size"] = self.hidden_size
 
         # 合并用户提供的额外参数
-        net_kwargs.update(self.policy_net_kwargs)
+        net_kwargs.update(extra_kwargs)
 
         # 创建策略网络和目标网络
         self.policy_net = self.policy_net_class(**net_kwargs).to(self.device)
@@ -203,6 +175,9 @@ class DQNAgent(Agent):
         Returns:
             损失值
         """
+        if not self.replay_buffer.is_ready(self.batch_size):
+            return 0.0
+
         if self.learn_counter % self.target_update == 0:
             self.target_net.load_state_dict(self.policy_net.state_dict())
         self.learn_counter += 1

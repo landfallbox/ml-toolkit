@@ -51,7 +51,6 @@ class ReplayBuffer:
         indices = np.random.choice(len(self.buffer), batch_size, replace=False)
         sampled_transitions = [self.buffer[i] for i in indices]
 
-        # 将样本列表转换为字段 -> 值列表的字典
         batch_dict = {}
         if sampled_transitions:
             fields = sampled_transitions[0].keys()
