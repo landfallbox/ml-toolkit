@@ -89,6 +89,36 @@ def reshape_to_sequence_format(
     return reshaped
 
 
+def build_sliding_window_sequences(features: torch.Tensor, seq_length: int) -> torch.Tensor:
+    """
+    基于单时刻特征构建滑动窗口序列，时间顺序为当前时刻到历史时刻
+
+    参数：
+        features: shape (num_rows, input_size) 的单时刻特征张量
+        seq_length: 序列长度
+
+    返回：
+        shape (num_rows - seq_length + 1, seq_length, input_size) 的序列张量
+    """
+    if seq_length < 1:
+        raise ValueError(f"seq_length 必须大于等于 1，当前值为 {seq_length}")
+
+    if features.ndim != 2:
+        raise ValueError(f"features 必须是二维张量，当前维度为 {features.ndim}")
+
+    num_rows = features.shape[0]
+    if num_rows < seq_length:
+        raise ValueError(
+            f"样本数量不足。当前行数={num_rows}，序列长度={seq_length}，至少需要 {seq_length} 行"
+        )
+
+    num_samples = num_rows - seq_length + 1
+    start_indices = torch.arange(num_samples, device=features.device).unsqueeze(1)
+    time_offsets = torch.arange(seq_length - 1, -1, -1, device=features.device).unsqueeze(0)
+    time_indices = start_indices + time_offsets
+    return features[time_indices].contiguous()
+
+
 def load_csv_to_sequence_tensor(
     file_path: Path,
     target_column_name: str,
@@ -138,19 +168,7 @@ def load_csv_to_sequence_tensor(
             f"期望 input_size={input_size}，实际特征维度={features.shape[1]}"
         )
 
-    num_rows = features.shape[0]
-    if num_rows < seq_length:
-        raise ValueError(
-            f"raw 格式样本数量不足。当前行数={num_rows}，序列长度={seq_length}，至少需要 {seq_length} 行"
-        )
-
-    windows = []
-    for end_idx in range(seq_length - 1, num_rows):
-        start_idx = end_idx - seq_length + 1
-        window = features[start_idx : end_idx + 1]
-        windows.append(window.flip(0))
-
-    sequence_features = torch.stack(windows, dim=0)
+    sequence_features = build_sliding_window_sequences(features, seq_length)
     aligned_targets = targets[seq_length - 1 :]
     return sequence_features, aligned_targets
 
