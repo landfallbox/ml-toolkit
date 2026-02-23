@@ -12,6 +12,7 @@ from .tensor_loader import (
     DataLoaderConfig,
     create_data_loaders,
     load_csv_to_tensor,
+    load_csv_to_sequence_tensor,
     reshape_to_sequence_format,
 )
 
@@ -24,5 +25,6 @@ __all__ = [
     "DataLoaderConfig",
     "create_data_loaders",
     "load_csv_to_tensor",
+    "load_csv_to_sequence_tensor",
     "reshape_to_sequence_format",
 ]

@@ -89,6 +89,41 @@ def reshape_to_sequence_format(
     return reshaped
 
 
+def load_csv_to_sequence_tensor(
+    file_path: Path, target_column_name: str, seq_length: int, input_size: int
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    直接从CSV加载并转换为RNN序列格式张量
+
+    参数：
+        file_path: CSV文件路径
+        target_column_name: 目标列名（不含_target后缀）
+        seq_length: 序列长度
+        input_size: 输入特征维度
+
+    返回：
+        (sequence_features, targets)
+        sequence_features: shape (num_samples, seq_length, input_size)
+        targets: shape (num_samples, 1)
+
+    说明：
+        该方法是高阶封装，内部复用 load_csv_to_tensor 和 reshape_to_sequence_format。
+    """
+    if seq_length < 1:
+        raise ValueError(f"seq_length 必须大于等于 1，当前值为 {seq_length}")
+
+    if input_size < 1:
+        raise ValueError(f"input_size 必须大于等于 1，当前值为 {input_size}")
+
+    features, targets = load_csv_to_tensor(file_path=file_path, target_column_name=target_column_name)
+    sequence_features = reshape_to_sequence_format(
+        features=features,
+        seq_length=seq_length,
+        input_size=input_size,
+    )
+    return sequence_features, targets
+
+
 def create_data_loaders(
     train_features: torch.Tensor,
     train_targets: torch.Tensor,
