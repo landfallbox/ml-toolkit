@@ -6,7 +6,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 import pandas as pd
@@ -34,7 +34,7 @@ def load_csv_to_tensor(
     加载CSV文件并转换为PyTorch张量
     参数：
         file_path: CSV文件路径
-        target_column_name: 目标列名（不含_target后缀）
+        target_column_name: 目标列名（完整列名）
     返回：
         (features_tensor, targets_tensor)
         features_tensor: shape (num_samples, num_features)，dtype=float32
@@ -54,7 +54,7 @@ def load_csv_to_tensor(
         raise ValueError(f"CSV文件为空: {file_path}")
 
     # 分离特征列和目标列
-    target_col = f"{target_column_name}_target"
+    target_col = target_column_name
     if target_col not in df.columns:
         raise ValueError(f"目标列 '{target_col}' 在CSV中不存在，可用列: {df.columns.tolist()}")
     feature_cols = [col for col in df.columns if col != target_col]
@@ -90,24 +90,28 @@ def reshape_to_sequence_format(
 
 
 def load_csv_to_sequence_tensor(
-    file_path: Path, target_column_name: str, seq_length: int, input_size: int
+    file_path: Path,
+    target_column_name: str,
+    seq_length: int,
+    input_size: int,
+    input_format: Literal["flattened", "raw"] = "flattened",
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """
     直接从CSV加载并转换为RNN序列格式张量
 
     参数：
         file_path: CSV文件路径
-        target_column_name: 目标列名（不含_target后缀）
+        target_column_name: 目标列名（完整列名）
         seq_length: 序列长度
         input_size: 输入特征维度
+        input_format: 输入特征格式
+            - "flattened": 每行特征已展平为 seq_length * input_size
+            - "raw": 每行特征为单时刻 input_size，将在函数内构建滑动窗口
 
     返回：
         (sequence_features, targets)
         sequence_features: shape (num_samples, seq_length, input_size)
         targets: shape (num_samples, 1)
-
-    说明：
-        该方法是高阶封装，内部复用 load_csv_to_tensor 和 reshape_to_sequence_format。
     """
     if seq_length < 1:
         raise ValueError(f"seq_length 必须大于等于 1，当前值为 {seq_length}")
@@ -115,13 +119,40 @@ def load_csv_to_sequence_tensor(
     if input_size < 1:
         raise ValueError(f"input_size 必须大于等于 1，当前值为 {input_size}")
 
+    if input_format not in {"flattened", "raw"}:
+        raise ValueError(f"input_format 仅支持 'flattened' 或 'raw'，当前值为 {input_format}")
+
     features, targets = load_csv_to_tensor(file_path=file_path, target_column_name=target_column_name)
-    sequence_features = reshape_to_sequence_format(
-        features=features,
-        seq_length=seq_length,
-        input_size=input_size,
-    )
-    return sequence_features, targets
+
+    if input_format == "flattened":
+        sequence_features = reshape_to_sequence_format(
+            features=features,
+            seq_length=seq_length,
+            input_size=input_size,
+        )
+        return sequence_features, targets
+
+    if features.shape[1] != input_size:
+        raise ValueError(
+            "raw 格式下特征维度不匹配。"
+            f"期望 input_size={input_size}，实际特征维度={features.shape[1]}"
+        )
+
+    num_rows = features.shape[0]
+    if num_rows < seq_length:
+        raise ValueError(
+            f"raw 格式样本数量不足。当前行数={num_rows}，序列长度={seq_length}，至少需要 {seq_length} 行"
+        )
+
+    windows = []
+    for end_idx in range(seq_length - 1, num_rows):
+        start_idx = end_idx - seq_length + 1
+        window = features[start_idx : end_idx + 1]
+        windows.append(window.flip(0))
+
+    sequence_features = torch.stack(windows, dim=0)
+    aligned_targets = targets[seq_length - 1 :]
+    return sequence_features, aligned_targets
 
 
 def create_data_loaders(
