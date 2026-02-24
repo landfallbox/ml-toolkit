@@ -18,9 +18,10 @@ class StreamingThresholdOptimizer:
         global_ema_decay: float = 0.01,
         alpha: float = 0.7,
         min_samples_for_optimization: int = 50,
-        quantile: float = 0.9,
-        mad_scale: float = 3.0,
+        quantile: float = 0.8,
+        mad_scale: float = 1.8,
         local_update_rate: float = 0.3,
+        quantile_weight: float = 0.6,
     ):
         self.local_window_size = local_window_size
         self.global_ema_decay = global_ema_decay
@@ -29,6 +30,7 @@ class StreamingThresholdOptimizer:
         self.quantile = quantile
         self.mad_scale = mad_scale
         self.local_update_rate = local_update_rate
+        self.quantile_weight = quantile_weight
 
         self.local_score_buffer = deque(maxlen=local_window_size)
 
@@ -54,7 +56,7 @@ class StreamingThresholdOptimizer:
         quantile_threshold = float(np.quantile(scores, self.quantile))
         mad_threshold = self._robust_mad_threshold(scores)
 
-        candidate = max(quantile_threshold, mad_threshold)
+        candidate = self.quantile_weight * quantile_threshold + (1.0 - self.quantile_weight) * mad_threshold
         candidate = float(np.clip(candidate, 0.0, 1.0))
         self.local_candidate_history.append(candidate)
 
@@ -99,6 +101,7 @@ class StreamingThresholdOptimizer:
             "quantile": self.quantile,
             "mad_scale": self.mad_scale,
             "local_update_rate": self.local_update_rate,
+            "quantile_weight": self.quantile_weight,
             "recent_local_candidate": float(self.local_candidate_history[-1])
             if len(self.local_candidate_history) > 0
             else 0.0,
