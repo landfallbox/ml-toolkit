@@ -179,6 +179,9 @@ class BayesianOptimizer:
         # 保存优化历史
         self._save_results()
 
+        if self.study is None:
+            raise RuntimeError("优化未成功创建 study，无法返回结果")
+
         return {
             "best_params": self.best_params,
             "best_value": self.best_value,
@@ -201,17 +204,21 @@ class BayesianOptimizer:
 
     def _save_results(self):
         """保存优化结果到文件"""
+        if self.study is None:
+            raise RuntimeError("study 未初始化，无法保存优化结果")
+
+        study = self.study
         results = {
             "best_params": self._round_params(self.best_params),
             "best_params_raw": self.best_params,
             "best_params_rounded": self._round_params(self.best_params),
             "best_value": self.best_value,
-            "n_trials": len(self.study.trials),
+            "n_trials": len(study.trials),
             "trials": [],
         }
 
         # 记录每一轮的结果
-        for trial in self.study.trials:
+        for trial in study.trials:
             trial_record = {
                 "trial_number": trial.number,
                 "params": self._round_params(trial.params),
@@ -251,8 +258,12 @@ class BayesianOptimizer:
 
     def get_best_params(self) -> Dict[str, Any]:
         """获取最优超参"""
+        if self.best_params is None:
+            raise RuntimeError("尚未完成优化，best_params 不可用")
         return self.best_params
 
     def get_best_value(self) -> float:
         """获取最优值（验证损失）"""
+        if self.best_value is None:
+            raise RuntimeError("尚未完成优化，best_value 不可用")
         return self.best_value
