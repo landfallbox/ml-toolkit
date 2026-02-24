@@ -143,7 +143,11 @@ class BayesianOptimizer:
         return optuna_objective
 
     def optimize(
-        self, objective_fn: Callable, n_trials: int = 100, **objective_kwargs
+        self,
+        objective_fn: Callable,
+        n_trials: int = 100,
+        n_jobs: int = 1,
+        **objective_kwargs,
     ) -> Dict[str, Any]:
         """
         执行贝叶斯优化
@@ -152,6 +156,7 @@ class BayesianOptimizer:
             objective_fn: 目标函数，签名为 (trial, params, **kwargs) -> float
                          应返回单个数值（优化目标，通常为验证损失）
             n_trials: 优化轮数
+            n_jobs: 并行任务数（1 表示串行）
             objective_kwargs: 传递给目标函数的额外关键字参数
 
         返回：
@@ -165,7 +170,7 @@ class BayesianOptimizer:
         self.study = optuna.create_study(direction="minimize", sampler=sampler, pruner=pruner)
 
         # 执行优化
-        self.study.optimize(optuna_objective, n_trials=n_trials)
+        self.study.optimize(optuna_objective, n_trials=n_trials, n_jobs=n_jobs)
 
         # 记录最优结果
         self.best_params = self.study.best_params
