@@ -9,6 +9,12 @@ from .logger import Logger
 from .loss_factory import create_loss_fn
 from .metrics_recorder import MetricsRecorder
 from .optimizer_factory import create_optimizer
+from .orchestration import (
+    ExperimentContext,
+    copy_config_snapshot,
+    create_experiment_context,
+    resolve_experiment_dir,
+)
 
 __all__ = [
     "Logger",
@@ -17,6 +23,10 @@ __all__ = [
     "MetricsRecorder",
     "create_loss_fn",
     "create_optimizer",
+    "ExperimentContext",
+    "create_experiment_context",
+    "resolve_experiment_dir",
+    "copy_config_snapshot",
 ]
 
 # 可选的可视化和超参数优化工具（需要额外依赖）
