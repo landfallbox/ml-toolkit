@@ -15,6 +15,7 @@ from .orchestration import (
     create_experiment_context,
     resolve_experiment_dir,
 )
+from .reproducibility import configure_reproducibility
 
 __all__ = [
     "Logger",
@@ -23,6 +24,7 @@ __all__ = [
     "MetricsRecorder",
     "create_loss_fn",
     "create_optimizer",
+    "configure_reproducibility",
     "ExperimentContext",
     "create_experiment_context",
     "resolve_experiment_dir",
