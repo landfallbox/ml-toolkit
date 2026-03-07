@@ -43,6 +43,27 @@ class StreamingIsolationDepth:
         self.sample_count = 0
         self.covariance_matrix = None
 
+    def _get_window_array(self, window: str) -> np.ndarray | None:
+        window_buffer = {
+            "short": self.short_buffer,
+            "medium": self.medium_buffer,
+            "long": self.long_buffer,
+        }.get(window)
+
+        if window_buffer is None:
+            raise ValueError(f"Unknown window: {window}")
+
+        if len(window_buffer) > 0:
+            return np.asarray(list(window_buffer), dtype=np.float32)
+        if self.reference_array is not None and len(self.reference_array) > 0:
+            return np.asarray(self.reference_array, dtype=np.float32)
+        return None
+
+    @staticmethod
+    def _normalize_distances(distances: np.ndarray, feature_dim: int) -> np.ndarray:
+        dim_scale = max(np.sqrt(float(feature_dim)), 1.0)
+        return distances / dim_scale
+
     def _initialize_reference_set(self, initial_data: np.ndarray) -> None:
         indices = np.random.choice(
             len(initial_data),
@@ -63,37 +84,48 @@ class StreamingIsolationDepth:
             self._update_distance_statistics()
 
     def _update_distance_statistics(self) -> None:
-        if len(self.reference_buffer) < 2:
-            return
+        for window_name in ("short", "medium", "long"):
+            window_array = self._get_window_array(window_name)
+            if window_array is None or len(window_array) < 2:
+                continue
 
-        ref_array = np.array(list(self.reference_buffer))
-        distances = []
+            max_samples = min(128, len(window_array))
+            sample_indices = np.linspace(0, len(window_array) - 1, num=max_samples, dtype=int)
+            sample_subset = window_array[sample_indices]
+            feature_dim = sample_subset.shape[1]
 
-        for i in range(min(100, len(ref_array))):
-            for j in range(i + 1, min(100, len(ref_array))):
-                distances.append(euclidean(ref_array[i], ref_array[j]))
+            distances = []
+            for i in range(max_samples):
+                diff = sample_subset[i + 1 :] - sample_subset[i]
+                if diff.size == 0:
+                    continue
+                pairwise_distances = np.linalg.norm(diff, axis=1)
+                distances.extend(self._normalize_distances(pairwise_distances, feature_dim).tolist())
 
-        if distances:
-            for window_name, buffer in [
-                ("short", self.short_buffer),
-                ("medium", self.medium_buffer),
-                ("long", self.long_buffer),
-            ]:
-                if len(buffer) > 0:
-                    window_dists = np.array(list(buffer))
-                    self.distance_stats[window_name]["mean"] = float(np.mean(window_dists))
-                    self.distance_stats[window_name]["std"] = float(np.std(window_dists)) + 1e-8
+            if distances:
+                distance_array = np.asarray(distances, dtype=np.float32)
+                self.distance_stats[window_name]["mean"] = float(np.mean(distance_array))
+                self.distance_stats[window_name]["std"] = float(np.std(distance_array)) + 1e-8
 
     def _compute_isolation_distance(self, sample: np.ndarray, window: str = "long") -> float:
-        if self.reference_array is None or len(self.reference_array) == 0:
+        window_array = self._get_window_array(window)
+        if window_array is None or len(window_array) == 0:
             return 0.0
 
+        feature_dim = int(window_array.shape[1]) if window_array.ndim == 2 else 1
         if self.distance_metric in {"euclidean", "mahalanobis"}:
-            distances = np.linalg.norm(self.reference_array - sample, axis=1)
+            distances = np.linalg.norm(window_array - sample, axis=1)
         else:
-            distances = np.linalg.norm(self.reference_array - sample, axis=1)
+            distances = np.linalg.norm(window_array - sample, axis=1)
 
-        return float(np.mean(distances))
+        normalized_distances = self._normalize_distances(distances, feature_dim)
+        if normalized_distances.size == 0:
+            return 0.0
+
+        k = min(max(5, int(np.sqrt(normalized_distances.size))), 32, normalized_distances.size)
+        nearest_distances = np.partition(normalized_distances, k - 1)[:k]
+
+        return float(np.mean(nearest_distances))
 
     def update(self, sample: np.ndarray) -> None:
         self.sample_count += 1
