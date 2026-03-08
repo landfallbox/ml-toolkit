@@ -43,7 +43,7 @@ class ConfigManager:
             filename = self.config_filename
         config_file = self.experiment_dir / filename
         with open(config_file, "w", encoding="utf-8") as f:
-            yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+            yaml.safe_dump(config, f, default_flow_style=False, allow_unicode=True)
 
     def load_config(self, filename: Optional[str] = None) -> Dict[str, Any]:
         """
