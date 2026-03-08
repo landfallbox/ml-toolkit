@@ -16,6 +16,12 @@ from .metrics import (
     calculate_recall,
     calculate_rmse,
 )
+from .event_gate_metrics import (
+    check_trigger_rate_constraint,
+    compute_delta_violation_time_pct,
+    compute_ppr,
+    summarize_event_gate_constraints,
+)
 
 __all__ = [
     "Evaluator",
@@ -29,4 +35,8 @@ __all__ = [
     "calculate_r2_score",
     "calculate_recall",
     "calculate_rmse",
+    "compute_ppr",
+    "compute_delta_violation_time_pct",
+    "check_trigger_rate_constraint",
+    "summarize_event_gate_constraints",
 ]

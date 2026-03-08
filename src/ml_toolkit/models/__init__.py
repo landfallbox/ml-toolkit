@@ -4,5 +4,6 @@
 """
 
 from .lstm import LSTM
+from .gate_value_mlp import GateValueMLP
 
-__all__ = ["LSTM"]
+__all__ = ["LSTM", "GateValueMLP"]
