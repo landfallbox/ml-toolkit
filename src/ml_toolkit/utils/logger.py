@@ -45,7 +45,8 @@ class Logger:
         file_handler.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter(
-            "%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+            "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
         console_handler.setFormatter(formatter)
         file_handler.setFormatter(formatter)
@@ -57,16 +58,16 @@ class Logger:
 
     def info(self, msg: str):
         """INFO 级别日志"""
-        self.logger.info(msg)
+        self.logger.info(msg, stacklevel=2)
 
     def debug(self, msg: str):
         """DEBUG 级别日志"""
-        self.logger.debug(msg)
+        self.logger.debug(msg, stacklevel=2)
 
     def warning(self, msg: str):
         """WARNING 级别日志"""
-        self.logger.warning(msg)
+        self.logger.warning(msg, stacklevel=2)
 
     def error(self, msg: str):
         """ERROR 级别日志"""
-        self.logger.error(msg)
+        self.logger.error(msg, stacklevel=2)
