@@ -17,15 +17,11 @@ class StreamingIsolationDepth:
         self,
         n_reference_samples: int = 500,
         update_freq: int = 100,
-        distance_metric: str = "euclidean",
         contamination: float = 0.2,
-        decay_strategy: str = "FIFO",
     ):
         self.n_reference_samples = n_reference_samples
         self.update_freq = update_freq
-        self.distance_metric = distance_metric
         self.contamination = contamination
-        self.decay_strategy = decay_strategy
 
         self.reference_buffer = deque(maxlen=n_reference_samples)
         self.reference_array = None
@@ -113,10 +109,7 @@ class StreamingIsolationDepth:
             return 0.0
 
         feature_dim = int(window_array.shape[1]) if window_array.ndim == 2 else 1
-        if self.distance_metric in {"euclidean", "mahalanobis"}:
-            distances = np.linalg.norm(window_array - sample, axis=1)
-        else:
-            distances = np.linalg.norm(window_array - sample, axis=1)
+        distances = np.linalg.norm(window_array - sample, axis=1)
 
         normalized_distances = self._normalize_distances(distances, feature_dim)
         if normalized_distances.size == 0:
